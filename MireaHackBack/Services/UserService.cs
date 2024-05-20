@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MireaHackBack.Database.Models;
 using MireaHackBack.Model.Smtp;
 using MireaHackBack.Model.User;
@@ -13,6 +14,7 @@ public class UserService : IUserService
     private readonly IUserProfileRepository _userProfileRepo;
     private readonly IRegistrationCodeRepository _regcodeRepo;
     private readonly ISmtpService _smtp;
+    private readonly Jwt _jwt;
 
     public UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, ISmtpService smtp)
     {
@@ -20,6 +22,7 @@ public class UserService : IUserService
         _userProfileRepo = userProfileRepo;
         _regcodeRepo = regcodeRepo;
         _smtp = smtp;
+        _jwt = new Jwt();
     }
     public ApiResponse FinishRegistration(UserFinishRegistrationModel model)
     {
@@ -54,6 +57,18 @@ public class UserService : IUserService
         _regcodeRepo.DeleteRegistrationCode(regcode);
         
         return new ApiResponse{StatusCode=200, Payload=new{Message="Account successfully registered"}};
+    }
+
+    public string GrantJwtToken(User user)
+    {
+        var claims = new List<Claim>
+        {
+
+            new(ClaimsIdentity.DefaultNameClaimType, user.Username),
+            new(ClaimsIdentity.DefaultRoleClaimType,"User")
+        };
+        
+        return _jwt.GrantToken(claims, DateTime.UtcNow.AddDays(1));
     }
 
     public ApiResponse Register(UserRegistrationModel model)

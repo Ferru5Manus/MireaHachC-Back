@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using MireaHackBack.Database.Models;
 
 namespace MireaHackBack.Utils;
 
@@ -19,18 +18,13 @@ public class Jwt
         _secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "MireaHackBack";
     }
 
-    public string GrantToken(User user)
+    public string GrantToken(List<Claim> claims, DateTime expirationDate)
     {
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, user.Username),
-            new Claim(ClaimsIdentity.DefaultRoleClaimType,"User")
-        };
         var jwt = new JwtSecurityToken(
             issuer: _issuer,
             audience: _audience,
             claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromDays(7)),
+            expires: expirationDate,
             signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret)), SecurityAlgorithms.HmacSha256));
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
         return encodedJwt;
