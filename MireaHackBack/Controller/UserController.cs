@@ -41,6 +41,7 @@ public class UserController : ControllerBase
     /// Завершить регистрацию аккаунта
     /// </summary>
     /// <response code="200">Аккаунт зарегистрирован.</response>
+    /// <response code="401">Некорректная электронная почта или код регистрации, либо действие кода регистрации истекло.</response>
     [Route("finishRegistration")]
     [HttpPost]
     public IActionResult Register([FromQuery] UserFinishRegistrationModel model)
