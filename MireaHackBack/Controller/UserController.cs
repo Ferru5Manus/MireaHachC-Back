@@ -15,6 +15,11 @@ public class UserController : ControllerBase
     [HttpPost]
     public IActionResult Register([FromQuery] UserRegistrationModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(model);
+        }
+
         throw new NotImplementedException();
     }   
 }

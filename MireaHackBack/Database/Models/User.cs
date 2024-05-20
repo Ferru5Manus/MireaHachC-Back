@@ -1,14 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
+[Index(nameof(Username), IsUnique = true)]
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
     [Key]
     public int Id {get;set;}
     [Required]
     [MinLength(3)]
+    [MaxLength(20)]
     [Column(TypeName = "VARCHAR(20)")]
     public string Username {get;set;}
     [Required]
@@ -16,6 +20,7 @@ public class User
     public string Email {get;set;}
     [Required]
     [MinLength(8)]
+    [MaxLength(50)]
     [Column(TypeName = "VARCHAR(50)")]
     public string Password {get;set;}
     [Required]

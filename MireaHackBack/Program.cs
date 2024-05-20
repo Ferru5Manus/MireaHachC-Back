@@ -1,6 +1,7 @@
 using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHackBack.Database;
+using MireaHackBack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<ApplicationContext>(x => {
 
 // Add services to the container.
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IRegistrationCodeRepository, RegistrationCodeRepository>();
+builder.Services.AddScoped<ISmtpService, SmtpService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
