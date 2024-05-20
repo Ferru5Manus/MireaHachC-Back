@@ -13,7 +13,7 @@ public class UserFinishRegistrationModel
     [Required]
     [MinLength(8)]
     [MaxLength(100)]
-    public string Password;
+    public string Password {get;set;}
 
     [Required]
     public string FirstName
