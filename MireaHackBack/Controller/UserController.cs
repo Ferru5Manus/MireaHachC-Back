@@ -8,6 +8,7 @@ using MireaHackBack.Services;
 namespace MireaHackBack.Controller;
 
 [ApiController]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

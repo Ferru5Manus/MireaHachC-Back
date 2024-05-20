@@ -23,6 +23,7 @@ builder.Services.AddDbContext<ApplicationContext>(x => {
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IRegistrationCodeRepository, RegistrationCodeRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 
 builder.Services.AddAuthorization();
@@ -75,6 +76,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
