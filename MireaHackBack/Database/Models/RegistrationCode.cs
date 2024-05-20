@@ -10,11 +10,11 @@ public class RegistrationCode
 
     [Required]
     [EmailAddress]
-    public string Email {get;set;}
+    public string Email {get;set;} = null!;
 
     [Required]
     [Column(TypeName = "VARCHAR(6)")]
-    public string Code {get;set;}
+    public string Code {get;set;} = null!;
 
     [Required]
     public DateTime RetryAt {get;set;}
