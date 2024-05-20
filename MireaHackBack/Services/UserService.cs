@@ -4,6 +4,8 @@ using MireaHackBack.Model.Smtp;
 using MireaHackBack.Model.User;
 using MireaHackBack.Repository;
 using MireaHackBack.Response;
+using MireaHackBack.Response.General;
+using MireaHackBack.Response.User;
 using MireaHackBack.Utils;
 
 namespace MireaHackBack.Services;
@@ -29,12 +31,12 @@ public class UserService : IUserService
         var regcode = _regcodeRepo.GetRegistrationCodeByEmail(model.Email);
         if (regcode == null || regcode.Code != model.RegistrationCode)
         {
-            return new ApiResponse{StatusCode=401, Payload=new{Message="Invalid email or registration code"}};
+            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Invalid email or registration code"}};
         }
 
         if (regcode.ValidUntil < DateTime.UtcNow)
         {
-            return new ApiResponse{StatusCode=401, Payload=new{Message="Registration Code seems to be expired"}};
+            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Registration Code seems to be expired"}};
         }
 
         var newUser = new User 
@@ -56,7 +58,12 @@ public class UserService : IUserService
         _userProfileRepo.CreateUserProfile(newUserProfile);
         _regcodeRepo.DeleteRegistrationCode(regcode);
         
-        return new ApiResponse{StatusCode=200, Payload=new{Message="Account successfully registered"}};
+        MessageResponse response = new()
+        {
+            Message="Registration Code seems to be expired"
+        };
+
+        return new ApiResponse{StatusCode=200, Payload=response};
     }
 
     public string GrantJwtToken(User user)
@@ -71,11 +78,27 @@ public class UserService : IUserService
         return _jwt.GrantToken(claims, DateTime.UtcNow.AddDays(1));
     }
 
+    public ApiResponse Login(UserLoginModel model)
+    {
+        var user = _userRepo.GetUserByUsername(model.Username);
+
+        if (user == null || !BcryptUtils.VerifyPassword(model.Password, user.Password))
+        {
+            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Invalid username or password"}};
+        }
+
+        var response = new TokenResponse{
+            Token=GrantJwtToken(user)
+        };
+
+        return new ApiResponse{StatusCode=200, Payload=response};
+    }
+
     public ApiResponse Register(UserRegistrationModel model)
     {
         if (_userRepo.GetUserByEmail(model.Email)!=null)
         {
-            return new ApiResponse{StatusCode=407, Payload=new{Message="Email already registered"}};
+            return new ApiResponse{StatusCode=409, Payload=new MessageResponse{Message="Email already registered"}};
         }
 
         var existingCode = _regcodeRepo.GetRegistrationCodeByEmail(model.Email);
@@ -87,7 +110,7 @@ public class UserService : IUserService
             }
             else
             {
-                return new ApiResponse{StatusCode=429, Payload=new{Message="Wait 2 minutes to request another code"}};
+                return new ApiResponse{StatusCode=429, Payload=new MessageResponse{Message="Wait 2 minutes to request another code"}};
             }
         }
 
@@ -113,9 +136,9 @@ public class UserService : IUserService
         catch (Exception)
         {
             _regcodeRepo.DeleteRegistrationCode(regcode);
-            return new ApiResponse{StatusCode=500, Payload=new{Message="Failed to send email."}};
+            return new ApiResponse{StatusCode=500, Payload=new MessageResponse{Message="Failed to send email."}};
         }
 
-        return new ApiResponse{StatusCode=200, Payload=new{Message="Code sent to email"}};
+        return new ApiResponse{StatusCode=200, Payload=new MessageResponse{Message="Code sent to email"}};
     }
 }

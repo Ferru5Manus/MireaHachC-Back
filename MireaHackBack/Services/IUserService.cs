@@ -9,4 +9,5 @@ public interface IUserService
     public string GrantJwtToken(User user);
     public ApiResponse Register(UserRegistrationModel model);
     public ApiResponse FinishRegistration(UserFinishRegistrationModel model);
+    public ApiResponse Login(UserLoginModel model);
 }
