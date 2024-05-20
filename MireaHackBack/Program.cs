@@ -1,5 +1,7 @@
+using AuthService.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHack.Database;
+using MireaHack.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -12,7 +14,10 @@ builder.Services.AddDbContext<ApplicationContext>(x => {
     var Password=Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "postgres";
     x.UseNpgsql($"Server={Hostname}:{Port};Database={Name};Uid={Username};Pwd={Password};");
 });
+
 // Add services to the container.
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
