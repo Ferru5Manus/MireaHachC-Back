@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MireaHackBack</name>
+    </assembly>
+    <members>
+        <member name="M:MireaHackBack.Controller.UserController.Register(MireaHackBack.Model.User.UserRegistrationModel)">
+            <summary>
+            Запросить регистрацию по данному Email.
+            </summary>
+            <response code="200">Код отправлен на почту.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.Register(MireaHackBack.Model.User.UserFinishRegistrationModel)">
+            <summary>
+            Завершить регистрацию аккаунта
+            </summary>
+            <response code="200">Аккаунт зарегистрирован.</response>
+        </member>
+    </members>
+</doc>

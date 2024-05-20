@@ -4,5 +4,5 @@ namespace MireaHackBack.Services;
 
 public interface ISmtpService
 {
-    public Task<bool> SendSystemMail(EmailModel model);
+    public bool SendSystemMail(EmailModel model);
 }

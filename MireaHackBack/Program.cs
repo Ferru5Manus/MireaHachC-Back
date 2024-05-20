@@ -2,6 +2,7 @@ using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHackBack.Database;
 using MireaHackBack.Services;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -21,9 +22,26 @@ builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IRegistrationCodeRepository, RegistrationCodeRepository>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 
+builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+  {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Компилятор кода",
+        Description = "Сервис компиляции кода от команды «Эспада» для студенческого хакатона «Системное программирование», организованный Институтом перспективных технологий и индустриального программирования и «Группой Астра»",
+    });
+
+    var xmlFile = Path.Combine(AppContext.BaseDirectory, "TestAPI.xml");
+    if (File.Exists(xmlFile))
+    {
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
+ });
 
 var app = builder.Build();
 

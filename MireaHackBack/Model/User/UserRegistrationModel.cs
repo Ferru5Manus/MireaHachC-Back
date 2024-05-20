@@ -6,5 +6,5 @@ public class UserRegistrationModel
 {
     [Required]
     [EmailAddress]
-    public string Email;
+    public string Email {get;set;}
 }

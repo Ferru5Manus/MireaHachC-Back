@@ -13,6 +13,12 @@ public class RegistrationCode
     public string Email {get;set;}
 
     [Required]
-    [Column(TypeName = "VARCHAR(30)")]
+    [Column(TypeName = "VARCHAR(6)")]
     public string Code {get;set;}
+
+    [Required]
+    public DateTime RetryAt {get;set;}
+
+    [Required]
+    public DateTime ValidUntil {get;set;}
 }

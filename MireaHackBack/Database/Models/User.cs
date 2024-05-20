@@ -19,9 +19,6 @@ public class User
     [EmailAddress]
     public string Email {get;set;}
     [Required]
-    [MinLength(8)]
-    [MaxLength(50)]
-    [Column(TypeName = "VARCHAR(50)")]
     public string Password {get;set;}
     [Required]
     public DateTime PasswordChangeDate {get;set;}

@@ -9,6 +9,13 @@ public class UserFinishRegistrationModel
     private string _username;
 
     [Required]
+    public string Email;
+    [Required]
+    [MinLength(8)]
+    [MaxLength(100)]
+    public string Password;
+
+    [Required]
     public string FirstName
     {
         get { return _firstName; }
