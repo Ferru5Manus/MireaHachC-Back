@@ -22,6 +22,6 @@ public class UserProfile
     public string LastName {get;set;}
     [MaxLength(100)]
     [Column(TypeName = "VARCHAR(100)")]
-    public string About {get;set;}
-    public string Picture {get;set;}
+    public string? About {get;set;}
+    public string? Picture {get;set;}
 }

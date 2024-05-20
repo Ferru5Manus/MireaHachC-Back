@@ -57,13 +57,8 @@ public class UserService : IUserService
         };
         _userProfileRepo.CreateUserProfile(newUserProfile);
         _regcodeRepo.DeleteRegistrationCode(regcode);
-        
-        MessageResponse response = new()
-        {
-            Message="Registration Code seems to be expired"
-        };
 
-        return new ApiResponse{StatusCode=200, Payload=response};
+        return new ApiResponse{StatusCode=200, Payload=new MessageResponse{Message="Successfully finished registration"}};
     }
 
     public string GrantJwtToken(User user)
