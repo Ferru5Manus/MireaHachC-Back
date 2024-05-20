@@ -1,7 +1,7 @@
-using MireaHack.Database;
-using MireaHack.Database.Models;
+using MireaHackBack.Database;
+using MireaHackBack.Database.Models;
 
-namespace MireaHack.Repository;
+namespace MireaHackBack.Repository;
 
 public interface IUserRepository
 {

@@ -1,8 +1,8 @@
-using MireaHack.Database;
-using MireaHack.Database.Models;
-using MireaHack.Repository;
+using MireaHackBack.Database;
+using MireaHackBack.Database.Models;
+using MireaHackBack.Repository;
 
-namespace AuthService.Repository;
+namespace MireaHackBack.Repository;
 
 public class UserRepository : IUserRepository
 {

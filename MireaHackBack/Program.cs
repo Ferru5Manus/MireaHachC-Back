@@ -1,7 +1,6 @@
-using AuthService.Repository;
+using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
-using MireaHack.Database;
-using MireaHack.Repository;
+using MireaHackBack.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();

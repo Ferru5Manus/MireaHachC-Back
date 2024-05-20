@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MireaHack.Database.Models;
+namespace MireaHackBack.Database.Models;
 
 public class User
 {

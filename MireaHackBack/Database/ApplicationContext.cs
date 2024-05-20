@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MireaHack.Database.Models;
-namespace MireaHack.Database;
+using MireaHackBack.Database.Models;
+namespace MireaHackBack.Database;
 
 public class ApplicationContext : DbContext
 {
