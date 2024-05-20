@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         string issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MireaHackBack";
         string audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MireaHackBack";
-        string secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "MireaHackBack";
+        string secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "TopSecretKeyForTheProtectionOfChocolateCookiesAndOtherSweetThings";
 
         options.TokenValidationParameters = new TokenValidationParameters
         {

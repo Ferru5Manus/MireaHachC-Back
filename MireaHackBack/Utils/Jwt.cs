@@ -15,7 +15,7 @@ public class Jwt
     {
         _issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MireaHackBack";
         _audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MireaHackBack";
-        _secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "MireaHackBack";
+        _secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "TopSecretKeyForTheProtectionOfChocolateCookiesAndOtherSweetThings";
     }
 
     public string GrantToken(List<Claim> claims, DateTime expirationDate)
