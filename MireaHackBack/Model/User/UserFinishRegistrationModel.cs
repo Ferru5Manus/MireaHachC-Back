@@ -9,7 +9,7 @@ public class UserFinishRegistrationModel
     private string _username;
 
     [Required]
-    public string Email;
+    public string Email {get;set;}
     [Required]
     [MinLength(8)]
     [MaxLength(100)]
