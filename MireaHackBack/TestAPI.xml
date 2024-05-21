@@ -6,15 +6,54 @@
     <members>
         <member name="M:MireaHackBack.Controller.UserController.Register(MireaHackBack.Model.User.UserRegistrationModel)">
             <summary>
-            Запросить регистрацию по данному Email.
+            Запросить регистрацию по данному Email
             </summary>
             <response code="200">Код отправлен на почту.</response>
+            <response code="409">Аккаунт с данной электронной почтой существует.</response>
+            <response code="429">Письмо уже было запрошено менее минуты назад.</response>
         </member>
-        <member name="M:MireaHackBack.Controller.UserController.Register(MireaHackBack.Model.User.UserFinishRegistrationModel)">
+        <member name="M:MireaHackBack.Controller.UserController.FinishRegistration(MireaHackBack.Model.User.UserFinishRegistrationModel)">
             <summary>
             Завершить регистрацию аккаунта
             </summary>
             <response code="200">Аккаунт зарегистрирован.</response>
+            <response code="401">Некорректная электронная почта или код регистрации, либо действие кода регистрации истекло.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.Login(MireaHackBack.Model.User.UserLoginModel)">
+            <summary>
+            Войти в аккаунт
+            </summary>
+            <response code="200">Вход успешен.</response>
+            <response code="401">Неверное имя пользователя или пароль.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.ChangePassword(MireaHackBack.Model.User.UserChangePasswordModel)">
+            <summary>
+            Изменить пароль аккаунта
+            </summary>
+            <response code="200">Успешно, выдан новый токен.</response>
+            <response code="401">Вы не авторизованы.</response>
+            <response code="403">Неверный старый пароль.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.UpdateToken">
+            <summary>
+            Получить обновленный токен доступа.
+            </summary>
+            <response code="200">Успешно.</response>
+            <response code="401">Токен не прошел валидацию.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.RequestPasswordReset(MireaHackBack.Model.User.UserRequestPasswordResetModel)">
+            <summary>
+            Запросить сброс пароля
+            </summary>
+            <response code="200">Код отправлен на почту.</response>
+            <response code="404">Пользователь не найден.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.ResetPassword(MireaHackBack.Model.User.UserResetPasswordModel)">
+            <summary>
+            Сбросить пароль, используя код
+            </summary>
+            <response code="200">Пароль успешно сброшен.</response>
+            <response code="401">Некорректный код или почта, либо действие кода истекло.</response>
         </member>
     </members>
 </doc>

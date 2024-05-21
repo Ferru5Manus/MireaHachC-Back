@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
-[Index(nameof(Email), IsUnique = true)]
-public class RegistrationCode
+[Index(nameof(UserId), IsUnique = true)]
+public class ResetCode
 {
     [Key]
     public long Id {get;set;}
-
     [Required]
-    [EmailAddress]
-    public string Email {get;set;} = null!;
+    public User User {get;set;} = null!;
+    [Required]
+    public long UserId {get;set;}
 
     [Required]
     [Column(TypeName = "VARCHAR(6)")]

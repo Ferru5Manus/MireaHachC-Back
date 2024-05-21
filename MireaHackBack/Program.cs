@@ -2,7 +2,10 @@ using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHackBack.Database;
 using MireaHackBack.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -20,7 +23,29 @@ builder.Services.AddDbContext<ApplicationContext>(x => {
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IRegistrationCodeRepository, RegistrationCodeRepository>();
+builder.Services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        string issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MireaHackBack";
+        string audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MireaHackBack";
+        string secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "TopSecretKeyForTheProtectionOfChocolateCookiesAndOtherSweetThings";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+            ValidateAudience = true,
+            ValidAudience = audience,
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+            ValidateIssuerSigningKey = true
+        };
+    });
 
 builder.Services.AddControllers();
 
@@ -52,6 +77,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.Run();

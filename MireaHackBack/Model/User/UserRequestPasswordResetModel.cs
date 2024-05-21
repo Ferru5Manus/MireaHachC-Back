@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MireaHackBack.Model.User;
 
-public class UserRegistrationModel
+public class UserRequestPasswordResetModel
 {
     [Required]
-    [EmailAddress]
     public string Email {get;set;} = null!;
 }

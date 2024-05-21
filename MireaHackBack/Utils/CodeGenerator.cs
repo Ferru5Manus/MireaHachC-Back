@@ -7,7 +7,7 @@ public static class CodeGenerator
 {
     public static string CodeGen(int length)
     {
-        const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
         {
