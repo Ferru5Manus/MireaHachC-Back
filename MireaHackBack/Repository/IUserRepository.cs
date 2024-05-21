@@ -1,4 +1,3 @@
-using MireaHackBack.Database;
 using MireaHackBack.Database.Models;
 
 namespace MireaHackBack.Repository;

@@ -1,6 +1,5 @@
 using MireaHackBack.Database;
 using MireaHackBack.Database.Models;
-using MireaHackBack.Repository;
 
 namespace MireaHackBack.Repository;
 
