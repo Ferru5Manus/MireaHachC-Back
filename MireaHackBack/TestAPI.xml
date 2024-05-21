@@ -34,11 +34,11 @@
             <response code="401">Вы не авторизованы.</response>
             <response code="403">Неверный старый пароль.</response>
         </member>
-        <member name="M:MireaHackBack.Controller.UserController.VerifyToken">
+        <member name="M:MireaHackBack.Controller.UserController.UpdateToken">
             <summary>
-            Проверить действительность токена
+            Получить обновленный токен доступа.
             </summary>
-            <response code="200">Токен действителен.</response>
+            <response code="200">Успешно.</response>
             <response code="401">Токен не прошел валидацию.</response>
         </member>
     </members>

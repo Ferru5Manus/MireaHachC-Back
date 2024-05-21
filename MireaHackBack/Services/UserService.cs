@@ -225,7 +225,7 @@ public class UserService : IUserService
         return ValidateToken(userClaim, out string username);
     }
 
-    public ApiResponse VerifyToken(ClaimsPrincipal userClaim)
+    public ApiResponse UpdateToken(ClaimsPrincipal userClaim)
     {
         if (!ValidateToken(userClaim, out string username))
         {

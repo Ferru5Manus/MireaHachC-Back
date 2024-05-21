@@ -98,22 +98,22 @@ public class UserController : ControllerBase
     }
 
     /// <summary>
-    /// Проверить действительность токена
+    /// Получить обновленный токен доступа.
     /// </summary>
-    /// <response code="200">Токен действителен.</response>
+    /// <response code="200">Успешно.</response>
     /// <response code="401">Токен не прошел валидацию.</response>
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
-    [Route("verifyToken")]
+    [Route("updateToken")]
     [HttpGet]
     [Authorize(Roles = "User")]
-    public IActionResult VerifyToken()
+    public IActionResult UpdateToken()
     {
         if (!ModelState.IsValid)
         {
             return BadRequest();
         }
         
-        var result = _userService.VerifyToken(User);
+        var result = _userService.UpdateToken(User);
 
         return StatusCode(result.StatusCode, result.Payload);
     }

@@ -11,6 +11,6 @@ public interface IUserService
     public ApiResponse Register(UserRegistrationModel model);
     public ApiResponse FinishRegistration(UserFinishRegistrationModel model);
     public ApiResponse Login(UserLoginModel model);
-    public ApiResponse VerifyToken(ClaimsPrincipal userClaims);
+    public ApiResponse UpdateToken(ClaimsPrincipal userClaims);
     public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model);
 }
