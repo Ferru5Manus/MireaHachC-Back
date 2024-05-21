@@ -10,24 +10,14 @@ using MireaHackBack.Utils;
 
 namespace MireaHackBack.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, IResetCodeRepository resetCodeRepo, ISmtpService smtp) : IUserService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IUserProfileRepository _userProfileRepo;
-    private readonly IRegistrationCodeRepository _regcodeRepo;
-    private readonly IResetCodeRepository _resetCodeRepo;
-    private readonly ISmtpService _smtp;
-    private readonly Jwt _jwt;
-
-    public UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, IResetCodeRepository resetCodeRepo, ISmtpService smtp)
-    {
-        _userRepo = userRepo;
-        _userProfileRepo = userProfileRepo;
-        _regcodeRepo = regcodeRepo;
-        _resetCodeRepo = resetCodeRepo;
-        _smtp = smtp;
-        _jwt = new Jwt();
-    }
+    private readonly IUserRepository _userRepo = userRepo;
+    private readonly IUserProfileRepository _userProfileRepo = userProfileRepo;
+    private readonly IRegistrationCodeRepository _regcodeRepo = regcodeRepo;
+    private readonly IResetCodeRepository _resetCodeRepo = resetCodeRepo;
+    private readonly ISmtpService _smtp = smtp;
+    private readonly Jwt _jwt = new Jwt();
 
     public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model)
     {
@@ -224,7 +214,7 @@ public class UserService : IUserService
     }
     private bool ValidateToken(ClaimsPrincipal userClaim)
     {
-        return ValidateToken(userClaim, out string username);
+        return ValidateToken(userClaim, out _);
     }
 
     public ApiResponse UpdateToken(ClaimsPrincipal userClaim)

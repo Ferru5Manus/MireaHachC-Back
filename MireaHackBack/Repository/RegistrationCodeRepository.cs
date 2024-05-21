@@ -3,14 +3,9 @@ using MireaHackBack.Database.Models;
 
 namespace MireaHackBack.Repository;
 
-public class RegistrationCodeRepository : IRegistrationCodeRepository
+public class RegistrationCodeRepository(ApplicationContext db) : IRegistrationCodeRepository
 {
-    private readonly ApplicationContext _db;
-
-    public RegistrationCodeRepository(ApplicationContext db)
-    {
-        _db = db;
-    }
+    private readonly ApplicationContext _db = db;
 
     public bool CreateRegistrationCode(RegistrationCode regcode)
     {

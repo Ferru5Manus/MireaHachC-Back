@@ -3,14 +3,9 @@ using MireaHackBack.Database.Models;
 
 namespace MireaHackBack.Repository;
 
-public class UserRepository : IUserRepository
+public class UserRepository(ApplicationContext db) : IUserRepository
 {
-    private readonly ApplicationContext _db;
-
-    public UserRepository(ApplicationContext db)
-    {
-        _db = db;
-    }
+    private readonly ApplicationContext _db = db;
 
     public bool CreateUser(User user)
     {
