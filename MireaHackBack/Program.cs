@@ -26,6 +26,7 @@ builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IRegistrationCodeRepository, RegistrationCodeRepository>();
 builder.Services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 
 // Authorization

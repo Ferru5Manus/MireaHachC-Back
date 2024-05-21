@@ -193,7 +193,7 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
     //При валидации делается запрос к базе данных для получения времени изменения
     //пароля, что используется для инвалидации устаревших токенов.
     //Параметр usernameString передает username, который пренадлежит хозяину токена.
-    private bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString)
+    public bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString)
     {
         usernameString="";
         var username = userClaim.FindFirst(ClaimsIdentity.DefaultNameClaimType);
@@ -218,7 +218,7 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
     }
 
     //Перегружает основную функцию, если не требуется получить username.
-    private bool ValidateToken(ClaimsPrincipal userClaim)
+    public bool ValidateToken(ClaimsPrincipal userClaim)
     {
         return ValidateToken(userClaim, out _);
     }

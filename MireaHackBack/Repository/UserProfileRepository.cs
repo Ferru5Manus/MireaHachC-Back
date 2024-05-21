@@ -26,12 +26,12 @@ public class UserProfileRepository(ApplicationContext db) : IUserProfileReposito
             .FirstOrDefault(up => up.User.Email == email);
     }
 
-    public UserProfile? GetUserProfileById(int id)
+    public UserProfile? GetUserProfileById(long id)
     {
         return _db.UserProfiles.FirstOrDefault(up => up.Id == id);
     }
 
-    public UserProfile? GetUserProfileByUserId(int userId)
+    public UserProfile? GetUserProfileByUserId(long userId)
     {
         return _db.UserProfiles.Include(u => u.User)
             .FirstOrDefault(up => up.User.Id == userId);
