@@ -45,7 +45,7 @@ public class UserController : ControllerBase
     /// <response code="401">Некорректная электронная почта или код регистрации, либо действие кода регистрации истекло.</response>
     [Route("finishRegistration")]
     [HttpPost]
-    public IActionResult Register([FromQuery] UserFinishRegistrationModel model)
+    public IActionResult FinishRegistration([FromQuery] UserFinishRegistrationModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -76,6 +76,28 @@ public class UserController : ControllerBase
     }
 
     /// <summary>
+    /// Изменить пароль аккаунта
+    /// </summary>
+    /// <response code="200">Успешно, выдан новый токен.</response>
+    /// <response code="401">Вы не авторизованы.</response>
+    /// <response code="403">Неверный старый пароль.</response>
+    [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
+    [Route("changePassword")]
+    [HttpPost]
+    [Authorize(Roles = "User")]
+    public IActionResult ChangePassword([FromQuery] UserChangePasswordModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+        
+        var result = _userService.ChangePassword(User, model);
+
+        return StatusCode(result.StatusCode, result.Payload);
+    }
+
+    /// <summary>
     /// Проверить действительность токена
     /// </summary>
     /// <response code="200">Токен действителен.</response>
@@ -86,7 +108,6 @@ public class UserController : ControllerBase
     [Authorize(Roles = "User")]
     public IActionResult VerifyToken()
     {
-        Console.WriteLine("penistone");
         if (!ModelState.IsValid)
         {
             return BadRequest();

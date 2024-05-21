@@ -26,6 +26,46 @@ public class UserService : IUserService
         _smtp = smtp;
         _jwt = new Jwt();
     }
+
+    public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model)
+    {
+        if (!ValidateToken(userClaims, out string username))
+        {
+            return new ApiResponse { StatusCode = 401 };
+        }
+
+        var user = _userRepo.GetUserByUsername(username);
+        if (user == null)
+        {
+            return new ApiResponse{StatusCode = 401 };
+        }
+
+        if (!BcryptUtils.VerifyPassword(model.OldPassword, user.Password))
+        {
+            return new ApiResponse
+            {
+                StatusCode = 403,
+                Payload = new MessageResponse
+                {
+                    Message="Incorrect old password"
+                }
+            };
+        }
+
+        user.Password=BcryptUtils.HashPassword(model.NewPassword);
+        user.PasswordChangeDate=DateTime.UtcNow;
+        _userRepo.UpdateUser(user);
+
+        return new ApiResponse
+        {
+            StatusCode = 200,
+            Payload = new TokenResponse
+            {
+                Token=GrantJwtToken(user)
+            }
+        };
+    }
+
     public ApiResponse FinishRegistration(UserFinishRegistrationModel model)
     {
         var regcode = _regcodeRepo.GetRegistrationCodeByEmail(model.Email);
@@ -79,7 +119,11 @@ public class UserService : IUserService
 
         if (user == null || !BcryptUtils.VerifyPassword(model.Password, user.Password))
         {
-            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Invalid username or password"}};
+            return new ApiResponse
+            {
+                StatusCode=401,
+                Payload=new MessageResponse{Message="Invalid username or password"}
+            };
         }
 
         var response = new TokenResponse{
@@ -93,7 +137,11 @@ public class UserService : IUserService
     {
         if (_userRepo.GetUserByEmail(model.Email)!=null)
         {
-            return new ApiResponse{StatusCode=409, Payload=new MessageResponse{Message="Email already registered"}};
+            return new ApiResponse
+            {
+                StatusCode=409,
+                Payload=new MessageResponse{Message="Email already registered"}
+            };
         }
 
         var existingCode = _regcodeRepo.GetRegistrationCodeByEmail(model.Email);
@@ -105,7 +153,11 @@ public class UserService : IUserService
             }
             else
             {
-                return new ApiResponse{StatusCode=429, Payload=new MessageResponse{Message="Wait 2 minutes to request another code"}};
+                return new ApiResponse
+                {
+                    StatusCode=429,
+                    Payload=new MessageResponse{Message="Wait 2 minutes to request another code"}
+                };
             }
         }
 
@@ -131,32 +183,65 @@ public class UserService : IUserService
         catch (Exception)
         {
             _regcodeRepo.DeleteRegistrationCode(regcode);
-            return new ApiResponse{StatusCode=500, Payload=new MessageResponse{Message="Failed to send email."}};
+            return new ApiResponse
+            {
+                StatusCode=500,
+                Payload=new MessageResponse{Message="Failed to send email."}
+            };
         }
 
-        return new ApiResponse{StatusCode=200, Payload=new MessageResponse{Message="Code sent to email"}};
+        return new ApiResponse
+        {
+            StatusCode=200, 
+            Payload=new MessageResponse{Message="Code sent to email"}
+        };
     }
 
-    public ApiResponse VerifyToken(ClaimsPrincipal userClaim)
+    private bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString)
     {
+        usernameString="";
         var username = userClaim.FindFirst(ClaimsIdentity.DefaultNameClaimType);
         var passwordChangeDate = userClaim.FindFirst("PasswordChangeDate");
         if (username == null || passwordChangeDate == null)
         {
-            return new ApiResponse{StatusCode=401};
+            return false;
         }
 
         var user = _userRepo.GetUserByUsername(username.Value);
         if (user == null)
         {
-            return new ApiResponse{StatusCode=401};
+            return false;
         }
 
         if (user.PasswordChangeDate > DateTime.Parse(passwordChangeDate.Value).AddSeconds(1))
         {
-            return new ApiResponse{StatusCode=401};
+            return false;
         }
-        
+        usernameString=username.Value;
+        return true;
+    }
+    private bool ValidateToken(ClaimsPrincipal userClaim)
+    {
+        return ValidateToken(userClaim, out string username);
+    }
+
+    public ApiResponse VerifyToken(ClaimsPrincipal userClaim)
+    {
+        if (!ValidateToken(userClaim, out string username))
+        {
+            return new ApiResponse { StatusCode = 403 };
+        }
+
+        var user = _userRepo.GetUserByUsername(username);
+        if (user == null)
+        {
+            return new ApiResponse
+            {
+                StatusCode = 500,
+                Payload=new MessageResponse{Message="Failed to issue token"}
+                };
+        }
+
         var response = new TokenResponse
         {
             Token=GrantJwtToken(user)
