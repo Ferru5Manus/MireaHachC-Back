@@ -51,6 +51,8 @@ public class UserProfileService(IUserProfileRepository userProfileRepo, IUserSer
         profile.LastName = model.LastName ?? profile.LastName;
         profile.About = model.About ?? profile.About;
 
+        _userProfileRepo.UpdateUserProfile(profile);
+
         return new ApiResponse
         {
             StatusCode=200,

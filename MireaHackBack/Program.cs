@@ -64,6 +64,31 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Сервис компиляции кода от команды «Эспада» для студенческого хакатона «Системное программирование», организованный Институтом перспективных технологий и индустриального программирования и «Группой Астра»",
     });
 
+    // Add JWT Bearer authentication
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        BearerFormat = "JWT",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
     var xmlFile = Path.Combine(AppContext.BaseDirectory, "TestAPI.xml");
     if (File.Exists(xmlFile))
     {
