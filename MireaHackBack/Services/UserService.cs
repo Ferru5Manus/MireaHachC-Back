@@ -189,6 +189,10 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
         };
     }
 
+    //Используется для валидации токена.
+    //При валидации делается запрос к базе данных для получения времени изменения
+    //пароля, что используется для инвалидации устаревших токенов.
+    //Параметр usernameString передает username, который пренадлежит хозяину токена.
     private bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString)
     {
         usernameString="";
@@ -212,11 +216,15 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
         usernameString=username.Value;
         return true;
     }
+
+    //Перегружает основную функцию, если не требуется получить username.
     private bool ValidateToken(ClaimsPrincipal userClaim)
     {
         return ValidateToken(userClaim, out _);
     }
 
+    //Позволяет обновить токен пользователя.
+    //Используемый токен не инвалидируется.
     public ApiResponse UpdateToken(ClaimsPrincipal userClaim)
     {
         if (!ValidateToken(userClaim, out string username))
