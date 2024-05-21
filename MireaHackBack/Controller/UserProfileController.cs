@@ -20,8 +20,9 @@ public class UserProfileController(IUserProfileService userProfileService) : Con
     /// </summary>
     /// <response code="200"></response>
     /// <response code="404">Профиль не найден.</response>
-    [Route("get")]
     [HttpGet]
+    [Route("get")]
+    [ProducesResponseType(typeof(UserProfileResponse), (int)HttpStatusCode.OK)]
     public IActionResult Get([FromQuery] UserProfileGetModel model)
     {
         if (!ModelState.IsValid)

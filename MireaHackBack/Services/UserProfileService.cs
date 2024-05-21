@@ -56,9 +56,13 @@ public class UserProfileService(IUserProfileRepository userProfileRepo, IUserSer
         return new ApiResponse
         {
             StatusCode=200,
-            Payload=new MessageResponse
+            Payload=new UserProfileResponse
             {
-                Message="Profile updated"
+                UserId=profile.UserId,
+                FirstName=profile.FirstName,
+                LastName=profile.LastName,
+                About=profile.About,
+                Picture=profile.Picture
             }
         };
     }
