@@ -15,14 +15,16 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepo;
     private readonly IUserProfileRepository _userProfileRepo;
     private readonly IRegistrationCodeRepository _regcodeRepo;
+    private readonly IResetCodeRepository _resetCodeRepo;
     private readonly ISmtpService _smtp;
     private readonly Jwt _jwt;
 
-    public UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, ISmtpService smtp)
+    public UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, IResetCodeRepository resetCodeRepo, ISmtpService smtp)
     {
         _userRepo = userRepo;
         _userProfileRepo = userProfileRepo;
         _regcodeRepo = regcodeRepo;
+        _resetCodeRepo = resetCodeRepo;
         _smtp = smtp;
         _jwt = new Jwt();
     }
@@ -248,5 +250,107 @@ public class UserService : IUserService
         };
 
         return new ApiResponse{StatusCode=200, Payload=response};
+    }
+
+    public ApiResponse RequestPasswordReset(UserRequestPasswordResetModel model)
+    {
+        var existingCode = _resetCodeRepo.GetResetCodeByEmail(model.Email);
+        if (existingCode != null)
+        {
+            if (DateTime.UtcNow > existingCode.RetryAt || DateTime.UtcNow > existingCode.ValidUntil)
+            {
+                _resetCodeRepo.DeleteResetCode(existingCode);
+            }
+            else
+            {
+                return new ApiResponse
+                {
+                    StatusCode=429,
+                    Payload=new MessageResponse{Message="Wait 2 minutes to request another code"}
+                };
+            }
+        }
+
+        var user = _userRepo.GetUserByEmail(model.Email);
+        if (user == null)
+        {
+            return new ApiResponse
+            {
+                StatusCode=404,
+                Payload=new MessageResponse
+                {
+                    Message="User not found"
+                }
+            };
+        }
+
+        var resetCodeString = CodeGenerator.CodeGen(6);
+
+        ResetCode resetCode = new()
+        {
+            User=user,
+            Code=resetCodeString,
+            ValidUntil=DateTime.UtcNow.AddMinutes(15),
+            RetryAt=DateTime.UtcNow.AddMinutes(2)
+        };
+        _resetCodeRepo.CreateResetCode(resetCode);
+
+        try
+            {
+            _smtp.SendSystemMail(new EmailModel{
+                Title="Password reset",
+                Content=$"Your password reset code is {resetCode.Code}, DO NOT GIVE IT TO ANYONE. If you did not request password reset, please, ignore this message.",
+                To=model.Email
+            });
+        }
+        catch (Exception)
+        {
+            _resetCodeRepo.DeleteResetCode(resetCode);
+            return new ApiResponse
+            {
+                StatusCode=500,
+                Payload=new MessageResponse{Message="Failed to send email."}
+            };
+        }
+
+        return new ApiResponse
+        {
+            StatusCode=200, 
+            Payload=new MessageResponse{Message="Code sent to email"}
+        };
+    }
+
+    public ApiResponse ResetPassword(UserResetPasswordModel model)
+    {
+        var resetCode = _resetCodeRepo.GetResetCodeByEmail(model.Email);
+        if (resetCode == null || resetCode.Code != model.ResetCode)
+        {
+            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Invalid email or reset code"}};
+        }
+
+        if (resetCode.ValidUntil < DateTime.UtcNow)
+        {
+            return new ApiResponse{StatusCode=401, Payload=new MessageResponse{Message="Reset code seems to be expired"}};
+        }
+
+        var user = _userRepo.GetUserByEmail(model.Email);
+        if (user == null)
+        {
+            return new ApiResponse
+            {
+                StatusCode=500,
+                Payload=new MessageResponse
+                {
+                    Message="Failed to reset password"
+                }
+            };
+        }
+
+        user.Password=BcryptUtils.HashPassword(model.NewPassword);
+        user.PasswordChangeDate=DateTime.UtcNow;
+
+        _resetCodeRepo.DeleteResetCode(resetCode);
+
+        return new ApiResponse{StatusCode=200, Payload=new MessageResponse{Message="You may now login"}};
     }
 }

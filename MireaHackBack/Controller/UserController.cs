@@ -117,4 +117,40 @@ public class UserController : ControllerBase
 
         return StatusCode(result.StatusCode, result.Payload);
     }
+
+    /// <summary>
+    /// Запросить сброс пароля
+    /// </summary>
+    /// <response code="200">Код отправлен на почту.</response>
+    /// <response code="404">Пользователь не найден.</response>
+    [Route("requestPasswordReset")]
+    [HttpPost]
+    public IActionResult RequestPasswordReset([FromQuery] UserRequestPasswordResetModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(model);
+        }
+        
+        var result = _userService.RequestPasswordReset(model);
+        return StatusCode(result.StatusCode, result.Payload);
+    }
+
+    /// <summary>
+    /// Сбросить пароль, используя код
+    /// </summary>
+    /// <response code="200">Пароль успешно сброшен.</response>
+    /// <response code="401">Некорректный код или почта, либо действие кода истекло.</response>
+    [Route("resetPassword")]
+    [HttpPost]
+    public IActionResult ResetPassword([FromQuery] UserResetPasswordModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(model);
+        }
+        
+        var result = _userService.ResetPassword(model);
+        return StatusCode(result.StatusCode, result.Payload);
+    }
 }

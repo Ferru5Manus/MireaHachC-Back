@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
-[Index(nameof(User), IsUnique = true)]
 public class ResetCode
 {
     [Key]
     public long Id {get;set;}
-
     [Required]
     public User User {get;set;} = null!;
+    [Required]
+    public long UserId {get;set;}
 
     [Required]
     [Column(TypeName = "VARCHAR(6)")]

@@ -41,5 +41,19 @@
             <response code="200">Успешно.</response>
             <response code="401">Токен не прошел валидацию.</response>
         </member>
+        <member name="M:MireaHackBack.Controller.UserController.RequestPasswordReset(MireaHackBack.Model.User.UserRequestPasswordResetModel)">
+            <summary>
+            Запросить сброс пароля
+            </summary>
+            <response code="200">Код отправлен на почту.</response>
+            <response code="404">Пользователь не найден.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserController.ResetPassword(MireaHackBack.Model.User.UserResetPasswordModel)">
+            <summary>
+            Сбросить пароль, используя код
+            </summary>
+            <response code="200">Пароль успешно сброшен.</response>
+            <response code="401">Некорректный код или почта, либо действие кода истекло.</response>
+        </member>
     </members>
 </doc>
