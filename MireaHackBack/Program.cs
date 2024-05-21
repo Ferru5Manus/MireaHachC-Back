@@ -10,6 +10,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
+// Database context
 builder.Services.AddDbContext<ApplicationContext>(x => {
     var Hostname=Environment.GetEnvironmentVariable("DB_HOSTNAME") ?? "localhost";
     var Port=Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
@@ -27,10 +28,12 @@ builder.Services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 
+// Authorization
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+
         string issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "MireaHackBack";
         string audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "MireaHackBack";
         string secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "TopSecretKeyForTheProtectionOfChocolateCookiesAndOtherSweetThings";
@@ -49,7 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
   {
@@ -70,7 +73,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Enable swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

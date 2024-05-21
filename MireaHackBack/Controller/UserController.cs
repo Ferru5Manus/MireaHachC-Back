@@ -92,7 +92,6 @@ public class UserController : ControllerBase
         }
         
         var result = _userService.ChangePassword(User, model);
-
         return StatusCode(result.StatusCode, result.Payload);
     }
 
@@ -103,7 +102,7 @@ public class UserController : ControllerBase
     /// <response code="401">Токен не прошел валидацию.</response>
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
     [Route("updateToken")]
-    [HttpGet]
+    [HttpPost]
     [Authorize(Roles = "User")]
     public IActionResult UpdateToken()
     {
@@ -113,7 +112,6 @@ public class UserController : ControllerBase
         }
         
         var result = _userService.UpdateToken(User);
-
         return StatusCode(result.StatusCode, result.Payload);
     }
 
