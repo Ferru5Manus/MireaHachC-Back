@@ -4,10 +4,10 @@ namespace MireaHackBack.Model.Smtp;
 
 public class EmailModel
 {
-    public string? Title {get;set;} = null!;
+    public string? Subject {get;set;} = null!;
 
     [Required]
-    public string Content {get;set;} = null!;
+    public string Body {get;set;} = null!;
     
     [Required]
     [EmailAddress]

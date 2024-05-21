@@ -177,8 +177,8 @@ public class UserService : IUserService
         try
             {
             _smtp.SendSystemMail(new EmailModel{
-                Title="Registration Code",
-                Content=$"Your registration code is {regcodeString}",
+                Subject="Registration Code",
+                Body=$"Your registration code is {regcodeString}",
                 To=model.Email
             });
         }
@@ -298,8 +298,8 @@ public class UserService : IUserService
         try
             {
             _smtp.SendSystemMail(new EmailModel{
-                Title="Password reset",
-                Content=$"Your password reset code is {resetCode.Code}, DO NOT GIVE IT TO ANYONE. If you did not request password reset, please, ignore this message.",
+                Subject="Password reset",
+                Body=$"Your password reset code is {resetCode.Code}, DO NOT GIVE IT TO ANYONE. If you did not request password reset, please, ignore this message.",
                 To=model.Email
             });
         }

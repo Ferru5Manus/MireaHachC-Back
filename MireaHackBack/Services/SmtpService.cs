@@ -33,7 +33,7 @@ public class SmtpService : ISmtpService
         if (_from == "") return false;
         try
         {
-            MailMessage mailMessage = new(_from, model.To, model.Title, model.Content);
+            MailMessage mailMessage = new(_from, model.To, model.Subject, model.Body);
             _smtpClient.Send(mailMessage);
             return true;
         }
