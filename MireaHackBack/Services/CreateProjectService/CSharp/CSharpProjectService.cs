@@ -65,6 +65,7 @@ public class CSharpProjectService : ICSharpProjectService
             string projectName = createProjectRequest.projectName;
             string command = $"dotnet new console -n {projectName}";
             List<FileModel> files = await RunDotnetCommand(command,createProjectRequest);
+            
             _logger.LogInformation("Project created!");
             return new CreateProjectResponse(){ files = files, ProjectName = createProjectRequest.projectName};
         }
@@ -134,6 +135,25 @@ public class CSharpProjectService : ICSharpProjectService
             process.StartInfo.UseShellExecute = false;
             process.Start();
             process.WaitForExit();
+            _fileAccesor.CreateFile(@"
+        
+            FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+            WORKDIR /app
+
+            # Copy csproj and restore as distinct layers
+            COPY *.csproj ./
+            RUN dotnet restore
+
+            # Copy the remaining source code
+            COPY . ./
+            RUN dotnet publish -c Release -o out
+
+            # Build runtime image
+            FROM mcr.microsoft.com/dotnet/runtime:5.0
+            WORKDIR /app
+            COPY --from=build /app/out .
+            ENTRYPOINT ["+"dotnet"+", "+createProjectRequest.projectName+"]"
+            ,"/root/NestedProjects/"+createProjectRequest.userName+"/"+createProjectRequest.projectName);
 
             return _fileAccesor.GetFiles("/root/NestedProjects/"+createProjectRequest.userName+"/"+createProjectRequest.projectName);
         }
