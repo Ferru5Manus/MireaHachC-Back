@@ -65,9 +65,9 @@ public class UserService : IUserService
     {
         var claims = new List<Claim>
         {
-
             new(ClaimsIdentity.DefaultNameClaimType, user.Username),
-            new(ClaimsIdentity.DefaultRoleClaimType,"User")
+            new(ClaimsIdentity.DefaultRoleClaimType,"User"),
+            new("PasswordChangeDate", user.PasswordChangeDate.ToString())
         };
         
         return _jwt.GrantToken(claims, DateTime.UtcNow.AddDays(1));
@@ -135,5 +135,33 @@ public class UserService : IUserService
         }
 
         return new ApiResponse{StatusCode=200, Payload=new MessageResponse{Message="Code sent to email"}};
+    }
+
+    public ApiResponse VerifyToken(ClaimsPrincipal userClaim)
+    {
+        var username = userClaim.FindFirst(ClaimsIdentity.DefaultNameClaimType);
+        var passwordChangeDate = userClaim.FindFirst("PasswordChangeDate");
+        if (username == null || passwordChangeDate == null)
+        {
+            return new ApiResponse{StatusCode=401};
+        }
+
+        var user = _userRepo.GetUserByUsername(username.Value);
+        if (user == null)
+        {
+            return new ApiResponse{StatusCode=401};
+        }
+
+        if (user.PasswordChangeDate > DateTime.Parse(passwordChangeDate.Value).AddSeconds(1))
+        {
+            return new ApiResponse{StatusCode=401};
+        }
+        
+        var response = new TokenResponse
+        {
+            Token=GrantJwtToken(user)
+        };
+
+        return new ApiResponse{StatusCode=200, Payload=response};
     }
 }

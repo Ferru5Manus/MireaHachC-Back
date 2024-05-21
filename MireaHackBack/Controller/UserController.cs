@@ -1,5 +1,6 @@
 using System.Net;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MireaHackBack.Model.User;
 using MireaHackBack.Response.User;
@@ -71,6 +72,28 @@ public class UserController : ControllerBase
         }
         
         var result = _userService.Login(model);
+        return StatusCode(result.StatusCode, result.Payload);
+    }
+
+    /// <summary>
+    /// Проверить действительность токена
+    /// </summary>
+    /// <response code="200">Токен действителен.</response>
+    /// <response code="401">Токен не прошел валидацию.</response>
+    [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
+    [Route("verifyToken")]
+    [HttpGet]
+    [Authorize(Roles = "User")]
+    public IActionResult VerifyToken()
+    {
+        Console.WriteLine("penistone");
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+        
+        var result = _userService.VerifyToken(User);
+
         return StatusCode(result.StatusCode, result.Payload);
     }
 }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MireaHackBack.Database.Models;
 using MireaHackBack.Model.User;
 using MireaHackBack.Response;
@@ -10,4 +11,5 @@ public interface IUserService
     public ApiResponse Register(UserRegistrationModel model);
     public ApiResponse FinishRegistration(UserFinishRegistrationModel model);
     public ApiResponse Login(UserLoginModel model);
+    public ApiResponse VerifyToken(ClaimsPrincipal user);
 }

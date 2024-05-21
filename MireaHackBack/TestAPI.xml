@@ -26,5 +26,12 @@
             <response code="200">Вход успешен.</response>
             <response code="401">Неверное имя пользователя или пароль.</response>
         </member>
+        <member name="M:MireaHackBack.Controller.UserController.VerifyToken">
+            <summary>
+            Проверить действительность токена
+            </summary>
+            <response code="200">Токен действителен.</response>
+            <response code="401">Токен не прошел валидацию.</response>
+        </member>
     </members>
 </doc>
