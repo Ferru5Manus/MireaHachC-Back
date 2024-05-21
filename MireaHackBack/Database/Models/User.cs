@@ -9,7 +9,7 @@ namespace MireaHackBack.Database.Models;
 public class User
 {
     [Key]
-    public int Id {get;set;}
+    public long Id {get;set;}
     [Required]
     [MinLength(3)]
     [MaxLength(20)]
