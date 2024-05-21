@@ -18,13 +18,16 @@ public class UserProfile
     [MaxLength(20)]
     [Column(TypeName = "VARCHAR(20)")]
     public string FirstName {get;set;} = null!;
+
     [Required]
     [MinLength(1)]
     [MaxLength(20)]
     [Column(TypeName = "VARCHAR(20)")]
     public string LastName {get;set;} = null!;
+
     [MaxLength(100)]
     [Column(TypeName = "VARCHAR(100)")]
     public string? About {get;set;}
+    
     public string? Picture {get;set;}
 }

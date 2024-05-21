@@ -4,14 +4,9 @@ using MireaHackBack.Database.Models;
 
 namespace MireaHackBack.Repository;
 
-public class ResetCodeRepository : IResetCodeRepository
+public class ResetCodeRepository(ApplicationContext db) : IResetCodeRepository
 {
-    private readonly ApplicationContext _db;
-
-    public ResetCodeRepository(ApplicationContext db)
-    {
-        _db = db;
-    }
+    private readonly ApplicationContext _db = db;
 
     public bool CreateResetCode(ResetCode resetCode)
     {

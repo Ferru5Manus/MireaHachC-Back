@@ -1,5 +1,4 @@
 using System.Net;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MireaHackBack.Model.User;
@@ -10,14 +9,9 @@ namespace MireaHackBack.Controller;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
     /// <summary>
     /// Запросить регистрацию по данному Email
@@ -79,8 +73,7 @@ public class UserController : ControllerBase
     /// Изменить пароль аккаунта
     /// </summary>
     /// <response code="200">Успешно, выдан новый токен.</response>
-    /// <response code="401">Вы не авторизованы.</response>
-    /// <response code="403">Неверный старый пароль.</response>
+    /// <response code="401">Вы не авторизованы, либо был передан некорректный старый пароль.</response>
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
     [Route("changePassword")]
     [HttpPost]
@@ -93,7 +86,6 @@ public class UserController : ControllerBase
         }
         
         var result = _userService.ChangePassword(User, model);
-
         return StatusCode(result.StatusCode, result.Payload);
     }
 
@@ -104,7 +96,7 @@ public class UserController : ControllerBase
     /// <response code="401">Токен не прошел валидацию.</response>
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
     [Route("updateToken")]
-    [HttpGet]
+    [HttpPost]
     [Authorize(Roles = "User")]
     public IActionResult UpdateToken()
     {
@@ -114,7 +106,6 @@ public class UserController : ControllerBase
         }
         
         var result = _userService.UpdateToken(User);
-
         return StatusCode(result.StatusCode, result.Payload);
     }
 

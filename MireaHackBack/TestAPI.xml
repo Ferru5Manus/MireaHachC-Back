@@ -32,7 +32,7 @@
             </summary>
             <response code="200">Успешно, выдан новый токен.</response>
             <response code="401">Вы не авторизованы.</response>
-            <response code="403">Неверный старый пароль.</response>
+            <response code="401">Неверный старый пароль.</response>
         </member>
         <member name="M:MireaHackBack.Controller.UserController.UpdateToken">
             <summary>

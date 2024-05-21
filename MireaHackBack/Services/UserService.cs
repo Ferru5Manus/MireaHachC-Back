@@ -10,24 +10,14 @@ using MireaHackBack.Utils;
 
 namespace MireaHackBack.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, IResetCodeRepository resetCodeRepo, ISmtpService smtp) : IUserService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IUserProfileRepository _userProfileRepo;
-    private readonly IRegistrationCodeRepository _regcodeRepo;
-    private readonly IResetCodeRepository _resetCodeRepo;
-    private readonly ISmtpService _smtp;
-    private readonly Jwt _jwt;
-
-    public UserService(IUserRepository userRepo, IUserProfileRepository userProfileRepo, IRegistrationCodeRepository regcodeRepo, IResetCodeRepository resetCodeRepo, ISmtpService smtp)
-    {
-        _userRepo = userRepo;
-        _userProfileRepo = userProfileRepo;
-        _regcodeRepo = regcodeRepo;
-        _resetCodeRepo = resetCodeRepo;
-        _smtp = smtp;
-        _jwt = new Jwt();
-    }
+    private readonly IUserRepository _userRepo = userRepo;
+    private readonly IUserProfileRepository _userProfileRepo = userProfileRepo;
+    private readonly IRegistrationCodeRepository _regcodeRepo = regcodeRepo;
+    private readonly IResetCodeRepository _resetCodeRepo = resetCodeRepo;
+    private readonly ISmtpService _smtp = smtp;
+    private readonly Jwt _jwt = new();
 
     public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model)
     {
@@ -46,7 +36,7 @@ public class UserService : IUserService
         {
             return new ApiResponse
             {
-                StatusCode = 403,
+                StatusCode = 401,
                 Payload = new MessageResponse
                 {
                     Message="Incorrect old password"
@@ -177,8 +167,8 @@ public class UserService : IUserService
         try
             {
             _smtp.SendSystemMail(new EmailModel{
-                Title="Registration Code",
-                Content=$"Your registration code is {regcodeString}",
+                Subject="Registration Code",
+                Body=$"Your registration code is {regcodeString}",
                 To=model.Email
             });
         }
@@ -199,6 +189,10 @@ public class UserService : IUserService
         };
     }
 
+    //Используется для валидации токена.
+    //При валидации делается запрос к базе данных для получения времени изменения
+    //пароля, что используется для инвалидации устаревших токенов.
+    //Параметр usernameString передает username, который пренадлежит хозяину токена.
     private bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString)
     {
         usernameString="";
@@ -222,16 +216,20 @@ public class UserService : IUserService
         usernameString=username.Value;
         return true;
     }
+
+    //Перегружает основную функцию, если не требуется получить username.
     private bool ValidateToken(ClaimsPrincipal userClaim)
     {
-        return ValidateToken(userClaim, out string username);
+        return ValidateToken(userClaim, out _);
     }
 
+    //Позволяет обновить токен пользователя.
+    //Используемый токен не инвалидируется.
     public ApiResponse UpdateToken(ClaimsPrincipal userClaim)
     {
         if (!ValidateToken(userClaim, out string username))
         {
-            return new ApiResponse { StatusCode = 403 };
+            return new ApiResponse { StatusCode = 401 };
         }
 
         var user = _userRepo.GetUserByUsername(username);
@@ -298,8 +296,8 @@ public class UserService : IUserService
         try
             {
             _smtp.SendSystemMail(new EmailModel{
-                Title="Password reset",
-                Content=$"Your password reset code is {resetCode.Code}, DO NOT GIVE IT TO ANYONE. If you did not request password reset, please, ignore this message.",
+                Subject="Password reset",
+                Body=$"Your password reset code is {resetCode.Code}, DO NOT GIVE IT TO ANYONE. If you did not request password reset, please, ignore this message.",
                 To=model.Email
             });
         }
