@@ -73,8 +73,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// Изменить пароль аккаунта
     /// </summary>
     /// <response code="200">Успешно, выдан новый токен.</response>
-    /// <response code="401">Вы не авторизованы.</response>
-    /// <response code="403">Неверный старый пароль.</response>
+    /// <response code="401">Вы не авторизованы, либо был передан некорректный старый пароль.</response>
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
     [Route("changePassword")]
     [HttpPost]

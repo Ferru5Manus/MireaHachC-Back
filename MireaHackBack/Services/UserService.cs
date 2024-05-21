@@ -17,7 +17,7 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
     private readonly IRegistrationCodeRepository _regcodeRepo = regcodeRepo;
     private readonly IResetCodeRepository _resetCodeRepo = resetCodeRepo;
     private readonly ISmtpService _smtp = smtp;
-    private readonly Jwt _jwt = new Jwt();
+    private readonly Jwt _jwt = new();
 
     public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model)
     {
@@ -36,7 +36,7 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
         {
             return new ApiResponse
             {
-                StatusCode = 403,
+                StatusCode = 401,
                 Payload = new MessageResponse
                 {
                     Message="Incorrect old password"
@@ -221,7 +221,7 @@ public class UserService(IUserRepository userRepo, IUserProfileRepository userPr
     {
         if (!ValidateToken(userClaim, out string username))
         {
-            return new ApiResponse { StatusCode = 403 };
+            return new ApiResponse { StatusCode = 401 };
         }
 
         var user = _userRepo.GetUserByUsername(username);
