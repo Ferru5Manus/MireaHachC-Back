@@ -31,8 +31,7 @@
             Изменить пароль аккаунта
             </summary>
             <response code="200">Успешно, выдан новый токен.</response>
-            <response code="401">Вы не авторизованы.</response>
-            <response code="401">Неверный старый пароль.</response>
+            <response code="401">Вы не авторизованы, либо был передан некорректный старый пароль.</response>
         </member>
         <member name="M:MireaHackBack.Controller.UserController.UpdateToken">
             <summary>
@@ -54,6 +53,20 @@
             </summary>
             <response code="200">Пароль успешно сброшен.</response>
             <response code="401">Некорректный код или почта, либо действие кода истекло.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserProfileController.Get(MireaHackBack.Model.UserProfile.UserProfileGetModel)">
+            <summary>
+            Полуить профиль по id пользователя
+            </summary>
+            <response code="200"></response>
+            <response code="404">Профиль не найден.</response>
+        </member>
+        <member name="M:MireaHackBack.Controller.UserProfileController.Update(MireaHackBack.Model.UserProfile.UserProfileUpdateModel)">
+            <summary>
+            Обновить данные профиля
+            </summary>
+            <response code="200"></response>
+            <response code="404">Профиль не найден.</response>
         </member>
     </members>
 </doc>

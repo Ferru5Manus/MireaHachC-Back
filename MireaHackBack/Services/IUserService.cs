@@ -13,6 +13,8 @@ public interface IUserService
     public ApiResponse Login(UserLoginModel model);
     public ApiResponse RequestPasswordReset(UserRequestPasswordResetModel model);
     public ApiResponse ResetPassword(UserResetPasswordModel model);
+    public bool ValidateToken(ClaimsPrincipal userClaim, out string usernameString);
+    public bool ValidateToken(ClaimsPrincipal userClaim);
     public ApiResponse UpdateToken(ClaimsPrincipal userClaims);
     public ApiResponse ChangePassword(ClaimsPrincipal userClaims, UserChangePasswordModel model);
 }
