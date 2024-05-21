@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
+[Index(nameof(UserId), IsUnique = true)]
 public class ResetCode
 {
     [Key]

@@ -1,14 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
+[Index(nameof(UserId), IsUnique = true)]
 public class UserProfile
 {
     [Key]
     public long Id {get;set;}
     [Required]
     public User User {get;set;} = null!;
+    public long UserId { get; set; }
 
     [Required]
     [MinLength(1)]
