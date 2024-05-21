@@ -1,19 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MireaHackBack.Database.Models;
 
+[Index(nameof(User), IsUnique = true)]
 public class ResetCode
 {
     [Key]
-    long Id {get;set;}
+    public long Id {get;set;}
 
     [Required]
-    User User {get;set;} = null!;
+    public User User {get;set;} = null!;
 
     [Required]
     [Column(TypeName = "VARCHAR(6)")]
-    string Code {get;set;} = null!;
+    public string Code {get;set;} = null!;
 
     [Required]
     public DateTime RetryAt {get;set;}
