@@ -17,58 +17,63 @@ public class RunProjectService : IRunProjectService
     }
     public async Task<GetProjectOutputResponse> GetProjectOutput(GetProjectOutputRequest getProjectOutputRequest)
     {
-        throw new NotImplementedException();
+
     }
 
     public async Task<RunProjectResponse> RunProject(RunProjectRequest runProjectRequest)
     {
-        throw new NotImplementedException();
         try
         {
-            
+            using var client = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
+
+            var container = client.Containers.CreateContainerAsync(new CreateContainerParameters()
+            {
+                Image=runProjectRequest.
+                
+            });
         }
         catch(Exception)
         {
             
         }
     }
-    private async Task BuildImageFromDockerfile(string dockerfilePath, string repositoryName)
+
+    private async Task<string?> BuildImageFromDockerfile(string dockerfilePath, string repositoryName)
     {
-        string dockerfile = "/path/to/Dockerfile";
+        //string dockerfile = "/path/to/Dockerfile"; //unused
         string tag = repositoryName+":latest";
         
         using (var client = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient())
         {
           
-                var imageIdStream = await client.Images.BuildImageFromDockerfileAsync(File.OpenRead(dockerfilePath), new ImageBuildParameters { Tags = new List<string> { tag } });
+            var imageIdStream = await client.Images.BuildImageFromDockerfileAsync(File.OpenRead(dockerfilePath), new ImageBuildParameters { Tags = new List<string> { tag } });
 
-                using (var reader = new StreamReader(imageIdStream))
-                {
-                    string output = reader.ReadToEnd();
-                  
-                    string[] lines = output.Split("\n");
-                    string? imageId = null;
-
-                    foreach (string line in lines)
-                    {
-                        if (line.StartsWith("Successfully built"))
-                        {
-                            imageId = line.Split(" ")[2];
-                            break;
-                        }
-                    }
-
-                    if (imageId == null)
-                    {
-                        throw new Exception("Image ID not found in build output.");
-                    }
-
-                    /*return imageId;*/ throw new NotImplementedException();
-                }
+            using (var reader = new StreamReader(imageIdStream))
+            {
+                string output = reader.ReadToEnd();
                 
-            
-            var containers = await client.Containers.ListContainersAsync(new ContainersListParameters());
-            string containerId = containers.FirstOrDefault()?.ID;
+                string[] lines = output.Split("\n");
+                string? imageId = null;
+
+                foreach (string line in lines)
+                {
+                    if (line.StartsWith("Successfully built"))
+                    {
+                        imageId = line.Split(" ")[2];
+                        break;
+                    }
+                }
+
+                if (imageId == null)
+                {
+                    throw new Exception("Image ID not found in build output.");
+                }
+
+                return imageId;
+            }
+                
+            //var containers = await client.Containers.ListContainersAsync(new ContainersListParameters());
+            //string containerId = containers.FirstOrDefault()?.ID;
 
             //return (imageId, containerId);
         }

@@ -50,7 +50,6 @@ public class CSharpProjectService : ICSharpProjectService
                 default:
                     return null;
             }
-            
         }
         catch(Exception ex)
         {
@@ -127,7 +126,7 @@ public class CSharpProjectService : ICSharpProjectService
         try
         {
             //TODO add caching 
-            Process process = new Process();
+            Process process = new();
             process.StartInfo.FileName = "dotnet";
             process.StartInfo.Arguments = arguments;
             process.StartInfo.WorkingDirectory = "/root/NestedProjects/"+createProjectRequest.userName+"/"+createProjectRequest.projectName;
