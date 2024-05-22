@@ -1,3 +1,5 @@
+
+
 using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHackBack.Database;
@@ -5,11 +7,27 @@ using MireaHackBack.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System.Text
+using System.Reflection;
+using FileArchieveApi.Singletones.Files;
+using FluentValidation.AspNetCore;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
+configureLogging();
+builder.Host.UseSerilog();
+builder.Services.AddSingleton<FileAccesor>();
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = "localhost";
+    options.InstanceName = "CodeRunner";
+});
 // Database context
 builder.Services.AddDbContext<ApplicationContext>(x => {
     var Hostname=Environment.GetEnvironmentVariable("DB_HOSTNAME") ?? "localhost";
@@ -99,17 +117,42 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Enable swagger
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
 
 app.Run();
+void configureLogging(){
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json",optional:false,reloadOnChange:true)
+    .AddJsonFile($"appsettings.{environment}.json", optional:true).Build();
+    Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .Enrich.WithExceptionDetails()
+            .WriteTo.Debug()
+            .WriteTo.Console()
+            .WriteTo.Elasticsearch(ConfigureElasticSink(configuration,environment))
+            .Enrich.WithProperty("Environment",environment)
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
+}
+ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration,string environment){
+    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat =  $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".","-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM-DD}",
+        NumberOfReplicas =1,
+        NumberOfShards = 1
+    };
+}
+
+
