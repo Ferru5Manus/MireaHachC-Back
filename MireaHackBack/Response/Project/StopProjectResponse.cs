@@ -1,4 +1,4 @@
-namespace MireaHackBack.Models.ProjectModels.Run;
+namespace MireaHackBack.Response.Project;
 
 public class StopProjectResponse
 {

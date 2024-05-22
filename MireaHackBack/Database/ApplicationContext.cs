@@ -8,7 +8,6 @@ public class ApplicationContext : DbContext
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<RegistrationCode> RegistrationCodes { get; set; }
     public DbSet<ResetCode> ResetCodes { get; set; }
-    public DbSet<Project> Projects { get; set; }
 
     #pragma warning disable CS8618
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)

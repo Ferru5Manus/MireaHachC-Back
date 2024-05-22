@@ -1,4 +1,4 @@
-namespace MireaHackBack.Models.ProjectModels;
+namespace MireaHackBack.Model.Project;
 
 public enum LanguageType
 {
