@@ -17,16 +17,17 @@ public class RunProjectService : IRunProjectService
     }
     public async Task<GetProjectOutputResponse> GetProjectOutput(GetProjectOutputRequest getProjectOutputRequest)
     {
-        
+        throw new NotImplementedException();
     }
 
     public async Task<RunProjectResponse> RunProject(RunProjectRequest runProjectRequest)
     {
+        throw new NotImplementedException();
         try
         {
-
+            
         }
-        catch()
+        catch(Exception)
         {
             
         }
@@ -62,14 +63,14 @@ public class RunProjectService : IRunProjectService
                         throw new Exception("Image ID not found in build output.");
                     }
 
-                    return imageId;
+                    /*return imageId;*/ throw new NotImplementedException();
                 }
                 
             
             var containers = await client.Containers.ListContainersAsync(new ContainersListParameters());
             string containerId = containers.FirstOrDefault()?.ID;
 
-            return (imageId, containerId);
+            //return (imageId, containerId);
         }
     
     }

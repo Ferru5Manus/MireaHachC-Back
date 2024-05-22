@@ -1,0 +1,86 @@
+services:
+#  elasticsearch:
+#    image: elastic/elasticsearch:8.7.1
+#    container_name: elasticsearch
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 3000M
+#    restart: always
+#    command: ['chown', '-R', '1000:1000', '/usr/share/elasticsearch/data']
+#    environment:
+#      - xpack.security.enabled=false
+#      - discovery.type=single-node
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#      nofile:
+#        soft: 65536
+#        hard: 65536
+#    cap_add:
+#      - IPC_LOCK
+#    volumes:
+#      - ./docker-data/elasticsearch-data:/usr/share/elasticsearch/data
+#    ports:
+#      - 9200:9200
+#  kibana:
+#    container_name: kibana
+#    image: kibana:8.7.1
+#    restart: always
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#    ports:
+#      - 5601:5601
+#    links:
+#      - elasticsearch:elasticsearch
+#    depends_on:
+#      - elasticsearch
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - ./docker-data/redis-data:/root/redis
+      - ./docker-data/redis-conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_PORT=port
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./docker-data/postgres-data:/var/lib/postgresql/data
+  backend:
+    build:
+        context: ./MireaHackBack/
+        dockerfile: Dockerfile
+    ports:
+      - 5238:5238
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+      - Files_Path=/files
+      - Redis_Uri=redis
+    volumes:
+      - ./docker-data/mireahackback-data:/files
+    links:
+      - postgres:postgres
+      - redis:redis
+#      - elasticsearch:elasticsearch
+#    depends_on:
+#      - redis
+#      - elasticsearch
+
+volumes:
+  elasticsearch-data:
+   driver: local
+  redis-data:
+   driver: local
+  redis-conf:
+   driver: local
+  archieve-data:
+   driver: local

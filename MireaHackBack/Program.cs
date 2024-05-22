@@ -25,12 +25,12 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddStackExchangeRedisCache(options => {
-    options.Configuration = "localhost";
+    options.Configuration = "redis";
     options.InstanceName = "CodeRunner";
 });
 // Database context
 builder.Services.AddDbContext<ApplicationContext>(x => {
-    var Hostname=Environment.GetEnvironmentVariable("DB_HOSTNAME") ?? "localhost";
+    var Hostname=Environment.GetEnvironmentVariable("DB_HOSTNAME") ?? "postgres";
     var Port=Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
     var Name=Environment.GetEnvironmentVariable("DB_NAME") ?? "postgres";
     var Username=Environment.GetEnvironmentVariable("DB_USERNAME") ?? "postgres";
