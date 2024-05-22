@@ -9,16 +9,11 @@ using MireaHackBack.Services.CreateProjectService.CSharp;
 
 namespace MireaHackBack.Services.CreateCSharpProjectService.CSharp;
 
-public class CSharpProjectService : ICSharpProjectService
+public class CSharpProjectService(FileAccesor fileAccesor, ILogger<CSharpProjectService> logger) : ICSharpProjectService
 {
-    private readonly FileAccesor _fileAccesor; 
-    private readonly ILogger<CSharpProjectService> _logger; 
-    public CSharpProjectService(FileAccesor fileAccesor, ILogger<CSharpProjectService> logger)
-    {
-        _fileAccesor = fileAccesor;
-        _logger = logger;
-    }
-    
+    private readonly FileAccesor _fileAccesor = fileAccesor; 
+    private readonly ILogger<CSharpProjectService> _logger = logger;
+
     public async Task<FileModel?> AddFileToCsProject(AddCsFileRequest addFileRequest)
     {
         try

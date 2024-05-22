@@ -21,7 +21,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <response code="429">Письмо уже было запрошено менее минуты назад.</response>
     [Route("register")]
     [HttpPost]
-    public IActionResult Register([FromQuery] UserRegistrationModel model)
+    public IActionResult Register([FromBody] UserRegistrationModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -39,7 +39,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <response code="401">Некорректная электронная почта или код регистрации, либо действие кода регистрации истекло.</response>
     [Route("finishRegistration")]
     [HttpPost]
-    public IActionResult FinishRegistration([FromQuery] UserFinishRegistrationModel model)
+    public IActionResult FinishRegistration([FromBody] UserFinishRegistrationModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -58,7 +58,7 @@ public class UserController(IUserService userService) : ControllerBase
     [ProducesResponseType(typeof(TokenResponse), (int)HttpStatusCode.OK), ]
     [Route("login")]
     [HttpPost]
-    public IActionResult Login([FromQuery] UserLoginModel model)
+    public IActionResult Login([FromBody] UserLoginModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -78,7 +78,7 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("changePassword")]
     [HttpPost]
     [Authorize(Roles = "User")]
-    public IActionResult ChangePassword([FromQuery] UserChangePasswordModel model)
+    public IActionResult ChangePassword([FromBody] UserChangePasswordModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -116,7 +116,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <response code="404">Пользователь не найден.</response>
     [Route("requestPasswordReset")]
     [HttpPost]
-    public IActionResult RequestPasswordReset([FromQuery] UserRequestPasswordResetModel model)
+    public IActionResult RequestPasswordReset([FromBody] UserRequestPasswordResetModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -134,7 +134,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <response code="401">Некорректный код или почта, либо действие кода истекло.</response>
     [Route("resetPassword")]
     [HttpPost]
-    public IActionResult ResetPassword([FromQuery] UserResetPasswordModel model)
+    public IActionResult ResetPassword([FromBody] UserResetPasswordModel model)
     {
         if (!ModelState.IsValid)
         {

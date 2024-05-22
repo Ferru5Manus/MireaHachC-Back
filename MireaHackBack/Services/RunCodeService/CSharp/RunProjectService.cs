@@ -2,19 +2,18 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using MireaHackBack.Models.ProjectModels.Run;
+using MireaHackBack.Repository;
 using MireaHackBack.Services.RunCodeService.CSharp;
 
 namespace MireaHackBack.Services.RunCodeService;
 
-public class RunProjectService : IRunProjectService
+public class RunProjectService(IDistributedCache distributedCache, ILogger<RunProjectService> logger, IProjectRepository projectRepo) : IRunProjectService
 {
-    private DockerClient _dockerClient;
+    private readonly DockerClient _dockerClient = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
     private readonly IDistributedCache _cache;
     private readonly ILogger<RunProjectService> _logger;
-    public RunProjectService(IDistributedCache distributedCache, ILogger<RunProjectService> logger)
-    {
-        _dockerClient =  new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
-    }
+    private readonly IProjectRepository _projectRepo = projectRepo;
+
     public async Task<GetProjectOutputResponse> GetProjectOutput(GetProjectOutputRequest getProjectOutputRequest)
     {
 
@@ -22,6 +21,8 @@ public class RunProjectService : IRunProjectService
 
     public async Task<RunProjectResponse> RunProject(RunProjectRequest runProjectRequest)
     {
+        var project = _projectRepo.getpro
+
         try
         {
             using var client = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
