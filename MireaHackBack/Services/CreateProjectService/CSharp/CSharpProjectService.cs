@@ -19,7 +19,7 @@ public class CSharpProjectService : ICSharpProjectService
         _logger = logger;
     }
     
-    public async Task<FileModel> AddFileToCsProject(AddCsFileRequest addFileRequest)
+    public async Task<FileModel?> AddFileToCsProject(AddCsFileRequest addFileRequest)
     {
         try
         {
@@ -55,7 +55,7 @@ public class CSharpProjectService : ICSharpProjectService
         catch(Exception ex)
         {
             _logger.LogError(ex.Message);
-            throw ex;
+            throw;
         }
     }
     public async Task<CreateProjectResponse> CreateCSharpProject(CreateProjectRequest createProjectRequest)
@@ -74,7 +74,7 @@ public class CSharpProjectService : ICSharpProjectService
             _logger.LogError(ex.Message);
             if(ex is CreateCsProjectCommandException)
             {
-                throw ex;
+                throw;
             }
             throw new CreateCsProjectException(ex.Message);
         }
@@ -90,7 +90,7 @@ public class CSharpProjectService : ICSharpProjectService
         catch(Exception ex)
         {
             _logger.LogError(ex.Message);
-            throw ex;
+            throw;
         }
     }
 
@@ -104,8 +104,8 @@ public class CSharpProjectService : ICSharpProjectService
        catch(Exception ex)
        {
             _logger.LogError(ex.Message);
-            throw ex;
-       }
+            throw;
+        }
     }
 
     public async Task<RemoveFileResponse> RemoveFileCsProject(RemoveFileRequest removeCsFileRequest)
@@ -118,7 +118,7 @@ public class CSharpProjectService : ICSharpProjectService
         catch(Exception ex)
         {
             _logger.LogError(ex.Message);
-            throw ex;
+            throw;
         }
     }
 

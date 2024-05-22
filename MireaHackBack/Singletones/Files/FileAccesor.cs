@@ -74,9 +74,9 @@ namespace FileArchieveApi.Singletones.Files
         {
             try
             {
-                List<FileModel> files = new List<FileModel>();
+                List<FileModel> files = [];
                 string folderPath = "/root/TestFiles";
-                DirectoryInfo di = new DirectoryInfo(folderPath);
+                DirectoryInfo di = new(folderPath);
                 ProcessDirectory(di,files);
 
                 return files;
@@ -104,9 +104,9 @@ namespace FileArchieveApi.Singletones.Files
         {
             try
             {
-                List<RequiredFileModel> requiredFiles = new List<RequiredFileModel>();
+                List<RequiredFileModel> requiredFiles = [];
                 string folderPath = "/root/";
-                DirectoryInfo di = new DirectoryInfo(folderPath);
+                DirectoryInfo di = new(folderPath);
                 List<FileInfo> filesInfo = di.GetFiles().ToList<FileInfo>();
 
                 foreach (string filename in fileNames)

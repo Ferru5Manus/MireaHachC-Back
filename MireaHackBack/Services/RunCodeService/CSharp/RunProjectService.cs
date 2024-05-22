@@ -46,7 +46,7 @@ public class RunProjectService : IRunProjectService
                     string output = reader.ReadToEnd();
                   
                     string[] lines = output.Split("\n");
-                    string imageId = null;
+                    string? imageId = null;
 
                     foreach (string line in lines)
                     {

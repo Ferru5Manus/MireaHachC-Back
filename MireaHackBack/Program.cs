@@ -7,7 +7,7 @@ using MireaHackBack.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Text
+using System.Text;
 using System.Reflection;
 using FileArchieveApi.Singletones.Files;
 using FluentValidation.AspNetCore;
@@ -131,7 +131,7 @@ app.UseAuthorization();
 
 app.Run();
 void configureLogging(){
-    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
     var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json",optional:false,reloadOnChange:true)
     .AddJsonFile($"appsettings.{environment}.json", optional:true).Build();
