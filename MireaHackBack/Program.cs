@@ -7,7 +7,7 @@ using MireaHackBack.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Text
+using System.Text;
 using System.Reflection;
 using FileArchieveApi.Singletones.Files;
 using FluentValidation.AspNetCore;
