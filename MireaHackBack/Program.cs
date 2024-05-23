@@ -1,5 +1,3 @@
-
-
 using MireaHackBack.Repository;
 using Microsoft.EntityFrameworkCore;
 using MireaHackBack.Database;
@@ -48,7 +46,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 
-builder.Services.AddScoped<IRunProjectService, RunProjectService>();
+//builder.Services.AddScoped<IRunProjectService, RunProjectService>();
 
 // Authorization
 builder.Services.AddAuthorization();
@@ -125,15 +123,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
-
-
 
 // void configureLogging(){
 //     var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
