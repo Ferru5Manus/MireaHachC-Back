@@ -4,6 +4,11 @@
         <name>MireaHackBack</name>
     </assembly>
     <members>
+        <member name="M:MireaHackBack.Controller.ProjectController.CreateProject">
+            <summary>
+            Создать проект
+            </summary>
+        </member>
         <member name="M:MireaHackBack.Controller.UserController.Register(MireaHackBack.Model.User.UserRegistrationModel)">
             <summary>
             Запросить регистрацию по данному Email
