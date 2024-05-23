@@ -6,7 +6,7 @@ namespace MireaHackBack.Models.Requests;
 public class CreateProjectRequest
 {
     [Required]
-    public string projectName {get;set;}
+    public string projectName {get;set;} = null!;
     [Required]
     public LanguageType languageType {get;set;}
     public string? userName{get;set;}

@@ -1,6 +1,6 @@
-namespace MireaHackBack.Models.ProjectModels.CSharp;
+namespace MireaHackBack.Models.ProjectModels.Python;
 
-public class AddCsFileRequest
+public class AddPyFileRequest
 {
     public string fileName {get;set;} = null!;
     public string filePath {get;set;} = null!;

@@ -2,5 +2,5 @@ namespace MireaHackBack.Models.ProjectModels.Run;
 
 public class GetProjectOutputResponse
 {
-    public List<string> output {get;set;}
+    public List<string> output {get;set;} = null!;
 }

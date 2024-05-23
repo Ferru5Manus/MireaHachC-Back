@@ -1,4 +1,4 @@
-namespace MireaHackBack.Models.ProjectModels.CSharp;
+namespace MireaHackBack.Models.ProjectModels;
 
 public class RemoveFileResponse
 {
