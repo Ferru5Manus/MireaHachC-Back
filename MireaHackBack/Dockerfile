@@ -4,6 +4,10 @@ EXPOSE 5093
 
 ENV ASPNETCORE_URLS=http://+:5093
 
+RUN apt update && apt upgrade -y
+RUN apt install curl wget systemd -y
+RUN curl -sSL https://get.docker.com/ | sh
+
 USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release

@@ -13,12 +13,11 @@ using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using MireaHackBack.Services.RunCodeService.CSharp;
 using MireaHackBack.Services.RunCodeService;
-;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 // configureLogging();
-builder.Host.UseSerilog();
+// builder.Host.UseSerilog();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddEndpointsApiExplorer();
@@ -45,8 +44,7 @@ builder.Services.AddScoped<IResetCodeRepository, ResetCodeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
-
-//builder.Services.AddScoped<IRunProjectService, RunProjectService>();
+builder.Services.AddScoped<IRunProjectService, RunProjectService>();
 
 // Authorization
 builder.Services.AddAuthorization();
@@ -118,7 +116,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();

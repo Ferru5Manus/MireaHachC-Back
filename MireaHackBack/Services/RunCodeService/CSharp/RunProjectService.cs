@@ -47,7 +47,27 @@ public class RunProjectService(IDistributedCache distributedCache, ILogger<RunPr
 
     public async Task<string> BuildDockerImage(string csharpCode)
     {
-        using var client = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
+        string content = 
+        "FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env\n"+
+        "WORKDIR /App\n"+
+
+        "# Copy everything\n"+
+        "COPY . ./\n"+
+        "# Restore as distinct layers\n"+
+        "RUN dotnet restore\n"+
+        "# Build and publish a release\n"+
+        "RUN dotnet publish -c Release -o out\n"+
+
+        "# Build runtime image\n"+
+        "FROM mcr.microsoft.com/dotnet/aspnet:8.0\n"+
+        "WORKDIR /App\n"+
+        "COPY --from=build-env /App/out .\n"+
+
+        "EXPOSE 8080\n"+
+
+        "ENTRYPOINT [\"dotnet\", \"AuthService.dll\"]";
+        //using var client = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
+        //return Path.GetTempPath();
 
         string tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempFolder);
@@ -56,25 +76,21 @@ public class RunProjectService(IDistributedCache distributedCache, ILogger<RunPr
         File.WriteAllText(programFilePath, csharpCode);
 
         string dockerFilePath = Path.Combine(tempFolder, "Dockerfile");
-        File.WriteAllText(dockerFilePath, "FROM mcr.microsoft.com/dotnet/sdk:8.0\nCOPY . /app\nWORKDIR /app\nRUN dotnet publish -c Release -o out\nCMD [\"dotnet\", \"out/YourApp.dll\"]");
+        File.WriteAllText(dockerFilePath, content);
+        Console.WriteLine(dockerFilePath);
 
-        var dockerClient = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
-
-        var imageIdStream = await client.Images.BuildImageFromDockerfileAsync(File.OpenRead(dockerFilePath), new ImageBuildParameters { });
-
+        var imageIdStream = await _dockerClient.Images.BuildImageFromDockerfileAsync(File.OpenRead(dockerFilePath), new ImageBuildParameters { });
         using (var reader = new StreamReader(imageIdStream))
         {
             string output = reader.ReadToEnd();
             
             string[] lines = output.Split("\n");
             string imageId = null;
-            Console.WriteLine(223);
             foreach (string line in lines)
             {
                 if (line.StartsWith("Successfully built"))
                 {
                     imageId = line.Split(" ")[2];
-                    Console.WriteLine(imageId);
                     break;
                 }
             }
