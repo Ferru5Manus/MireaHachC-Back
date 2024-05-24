@@ -3,7 +3,7 @@ using MireaHackBack.Models.ProjectModels;
 using MireaHackBack.Models.ProjectModels.Python;
 using MireaHackBack.Models.Requests;
 
-namespace MireaHackBack.Services.CreateProjectService.CSharp;
+namespace MireaHackBack.Services.CreateProjectService.Python;
 
 public interface IPythonProjectService
 {
