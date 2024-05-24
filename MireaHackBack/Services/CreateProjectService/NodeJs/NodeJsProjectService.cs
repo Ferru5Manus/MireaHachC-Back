@@ -1,31 +1,21 @@
-using System.Diagnostics;
 using FileArchieveApi.Models.FileModels;
 using FileArchieveApi.Singletones.Files;
 using MireaHackBack.Models.ProjectModels;
-using MireaHackBack.Models.ProjectModels.Python;
+using MireaHackBack.Models.ProjectModels.NodeJs;
 using MireaHackBack.Models.Requests;
 
-namespace MireaHackBack.Services.CreateProjectService.Python;
+namespace MireaHackBack.Services.CreateProjectService.NodeJs;
 
-public class PythonProjectService(FileAccesor fileAccesor, ILogger<IPythonProjectService> logger) : IPythonProjectService
+public class NodeJsProjectService(FileAccesor fileAccesor, ILogger<INodeJsProjectService> logger) : INodeJsProjectService
 {
     private readonly FileAccesor _fileAccesor = fileAccesor; 
-    private readonly ILogger<IPythonProjectService> _logger = logger; 
-    public async Task<FileModel> AddFileToPyProject(AddPyFileRequest addFileRequest)
+    private readonly ILogger<INodeJsProjectService> _logger = logger; 
+    public async Task<FileModel> AddFileToNodeProject(AddNodeFileRequest addFileRequest)
     {
         try
         {
             switch (addFileRequest.fileType)
-            {
-                case FileType.MAIN:
-                    return _fileAccesor.CreateFile(@"
-                    def main():
-                        pass
-
-                    if __name__ == '__main__':
-                        main()
-                    ",addFileRequest.filePath);
-                  
+            {         
                 case FileType.EMPTY:
                     return _fileAccesor.CreateFile(@"
                     
@@ -42,13 +32,13 @@ public class PythonProjectService(FileAccesor fileAccesor, ILogger<IPythonProjec
         }
     }
 
-    public async Task<CreateProjectResponse> CreatePyProject(CreateProjectRequest createProjectRequest)
+    public async Task<CreateProjectResponse> CreateNodeProject(CreateProjectRequest createProjectRequest)
     {
         try
         {
             string projectName = createProjectRequest.projectName;
             string command = $"dotnet new console -n {projectName}";
-            List<FileModel> files = await RunPythonCommand(command,createProjectRequest);
+            List<FileModel> files = await RunNodeCommand(command,createProjectRequest);
             
             _logger.LogInformation("Project created!");
             return new CreateProjectResponse(){ files = files, ProjectName = createProjectRequest.projectName};
@@ -79,11 +69,11 @@ public class PythonProjectService(FileAccesor fileAccesor, ILogger<IPythonProjec
         }
     }
 
-    public async Task<RemoveFileResponse> RemoveFilePyProject(RemoveFileRequest removePyFileRequest)
+    public async Task<RemoveFileResponse> RemoveFileNodeProject(RemoveFileRequest removeNodeFileRequest)
     {
         try
         {
-            _fileAccesor.RemoveFile(removePyFileRequest.filePath);
+            _fileAccesor.RemoveFile(removeNodeFileRequest.filePath);
             return new RemoveFileResponse(){ IsSuccess = true};
         }
         catch(Exception ex)
@@ -93,11 +83,11 @@ public class PythonProjectService(FileAccesor fileAccesor, ILogger<IPythonProjec
         }
     }
 
-    public async Task<RemoveProjectResponse> RemovePyProject(RemoveProjectRequest removePyProjectRequest)
+    public async Task<RemoveProjectResponse> RemoveNodeProject(RemoveProjectRequest removeNodeProjectRequest)
     {
         try
        {
-            _fileAccesor.RemoveProject(removePyProjectRequest.projectPath);
+            _fileAccesor.RemoveProject(removeNodeProjectRequest.projectPath);
             return new RemoveProjectResponse(){ IsSuccess = true};
        }
        catch(Exception ex)
@@ -107,7 +97,7 @@ public class PythonProjectService(FileAccesor fileAccesor, ILogger<IPythonProjec
        }
     }
 
-    private async Task<List<FileModel>> RunPythonCommand(string arguments, CreateProjectRequest createProjectRequest)
+    private async Task<List<FileModel>> RunNodeCommand(string arguments, CreateProjectRequest createProjectRequest)
     {
         try
         {

@@ -7,7 +7,7 @@ namespace MireaHackBack.Services.CreateProjectService.Python;
 
 public interface IPythonProjectService
 {
-    Task<CreateProjectResponse> CreatePyroject(CreateProjectRequest createProjectRequest);
+    Task<CreateProjectResponse> CreatePyProject(CreateProjectRequest createProjectRequest);
     Task<FileModel> AddFileToPyProject(AddPyFileRequest addFileRequest);
     Task<RemoveFileResponse> RemoveFilePyProject(RemoveFileRequest removePyFileRequest);
     Task<RemoveProjectResponse> RemovePyProject(RemoveProjectRequest removePyProjectRequest);
